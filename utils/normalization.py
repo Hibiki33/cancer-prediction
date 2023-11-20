@@ -1,37 +1,38 @@
-#Color normalization with multiprocessing
-#Modify https://github.com/schaugf/HEnorm_python 
-
-import numpy as np
-import multiprocessing as mp
-import pandas as pd
-import numpy as np
-import argparse
-from PIL import Image
 import os
+import numpy as np
+from PIL import Image
+import argparse
 
-def file_name(file_dir):  
-    for root, dirs, files in os.walk(file_dir): 
-        return files
+
+def normalize_color(file_path : str, 
+                    save_path : str='./normalized'):
+    '''
+
+    Input:
+        file_name: file name of image
+        save_path: path to save image
+    Output:
+        Inorm: normalized image
+    '''
+    os.makedirs(save_path, exist_ok=True)
+
+    img_names = os.listdir(file_path)
+    for img_name in img_names:
+        img = np.array(Image.open(file_path + img))
+        normalize_staining(img, img_name, save_path=save_path)
 
 
-def normalizeStaining(img, name, saveFile=None, Io=240, alpha=1, beta=0.15):
+def normalize_staining(img, name, save_path=None, io=240, alpha=1, beta=0.15):
     ''' Normalize staining appearence of H&E stained images
-    
-    Example use:
-        see test.py
         
     Input:
-        I: RGB input image
-        Io: (optional) transmitted light intensity
+        img: RGB input image
+        io: (optional) transmitted light intensity
         
     Output:
         Inorm: normalized image
         H: hematoxylin image
         E: eosin image
-    
-    Reference: 
-        A method for normalizing histology slides for quantitative analysis. M.
-        Macenko et al., ISBI 2009
     '''
              
     HERef = np.array([[0.5626, 0.2159],
@@ -44,13 +45,13 @@ def normalizeStaining(img, name, saveFile=None, Io=240, alpha=1, beta=0.15):
     h, w, c = img.shape
     
     # reshape image
-    img = img.reshape((-1,3))
+    img = img.reshape((-1, 3))
 
     # calculate optical density
-    OD = -np.log((img.astype(np.float)+1)/Io)
+    OD = -np.log((img.astype(np.float) + 1) / io)
     
     # remove transparent pixels
-    ODhat = OD[~np.any(OD<beta, axis=1)]
+    ODhat = OD[~np.any(OD < beta, axis=1)]
         
     # compute eigenvectors
     eigvals, eigvecs = np.linalg.eigh(np.cov(ODhat.T))
@@ -63,70 +64,54 @@ def normalizeStaining(img, name, saveFile=None, Io=240, alpha=1, beta=0.15):
     
     phi = np.arctan2(That[:,1],That[:,0])
     
-    minPhi = np.percentile(phi, alpha)
-    maxPhi = np.percentile(phi, 100-alpha)
+    min_phi = np.percentile(phi, alpha)
+    max_phi = np.percentile(phi, 100 - alpha)
     
-    vMin = eigvecs[:,1:3].dot(np.array([(np.cos(minPhi), np.sin(minPhi))]).T)
-    vMax = eigvecs[:,1:3].dot(np.array([(np.cos(maxPhi), np.sin(maxPhi))]).T)
+    v_min = eigvecs[:,1:3].dot(np.array([(np.cos(min_phi), np.sin(min_phi))]).T)
+    v_max = eigvecs[:,1:3].dot(np.array([(np.cos(max_phi), np.sin(max_phi))]).T)
     
     # a heuristic to make the vector corresponding to hematoxylin first and the 
     # one corresponding to eosin second
-    if vMin[0] > vMax[0]:
-        HE = np.array((vMin[:,0], vMax[:,0])).T
+    if v_min[0] > v_max[0]:
+        HE = np.array((v_min[:,0], v_max[:,0])).T
     else:
-        HE = np.array((vMax[:,0], vMin[:,0])).T
+        HE = np.array((v_max[:,0], v_min[:,0])).T
     
     # rows correspond to channels (RGB), columns to OD values
     Y = np.reshape(OD, (-1, 3)).T
     
     # determine concentrations of the individual stains
-    C = np.linalg.lstsq(HE,Y, rcond=None)[0]
+    C = np.linalg.lstsq(HE, Y, rcond=None)[0]
     
     # normalize stain concentrations
     maxC = np.array([np.percentile(C[0,:], 99), np.percentile(C[1,:],99)])
-    tmp = np.divide(maxC,maxCRef)
+    tmp = np.divide(maxC, maxCRef)
     C2 = np.divide(C,tmp[:, np.newaxis])
     
     # recreate the image using reference mixing matrix
-    Inorm = np.multiply(Io, np.exp(-HERef.dot(C2)))
-    Inorm[Inorm>255] = 254
+    Inorm = np.multiply(io, np.exp(-HERef.dot(C2)))
+    Inorm[Inorm>  255] = 254
     Inorm = np.reshape(Inorm.T, (h, w, 3)).astype(np.uint8)  
     
     # unmix hematoxylin and eosin
-    H = np.multiply(Io, np.exp(np.expand_dims(-HERef[:,0], axis=1).dot(np.expand_dims(C2[0,:], axis=0))))
-    H[H>255] = 254
+    H = np.multiply(io, np.exp(np.expand_dims(-HERef[:,0], axis=1).dot(np.expand_dims(C2[0,:], axis=0))))
+    H[H > 255] = 254
     H = np.reshape(H.T, (h, w, 3)).astype(np.uint8)
     
-    E = np.multiply(Io, np.exp(np.expand_dims(-HERef[:,1], axis=1).dot(np.expand_dims(C2[1,:], axis=0))))
-    E[E>255] = 254
+    E = np.multiply(io, np.exp(np.expand_dims(-HERef[:,1], axis=1).dot(np.expand_dims(C2[1,:], axis=0))))
+    E[E > 255] = 254
     E = np.reshape(E.T, (h, w, 3)).astype(np.uint8)
     
-    if saveFile is None:
-        Image.fromarray(Inorm).save('please input folder'+name)  #please input folder
-        #Image.fromarray(H).save('please input folder'+name+'_H.png') #please input folder
-        #Image.fromarray(E).save('please input folder'+name+'_E.png') #please input folder
+    if save_path is not None:
+        Image.fromarray(Inorm).save(save_path + name)  
 
-    return Inorm#, H, E
+    return Inorm
 
-
-def data_process(x):
-    
-    
-
-    fig_list=file_name('path to folder') #please input file
-
-
-    for i in range(0,len(fig_list)):
-
-        img = np.array(Image.open('path to folder'+fig_list[i]))
-
-        normalize_img=normalizeStaining(img,name=fig_list[i])
-	#print(i)
-
-def multicore():
-    pool = mp.Pool() 
-    result = pool.map(data_process, range(10))
-    #print(result) 
 
 if __name__=='__main__':
-    multicore()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--file_path', type=str, default='./')
+    parser.add_argument('--save_path', type=str, default='./normalized')
+
+    args = parser.parse_args()
+    normalize_color(args.file_path, args.save_path)
