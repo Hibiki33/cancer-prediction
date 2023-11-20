@@ -2,6 +2,30 @@
 
 The replication of the paper *Histopathology images predict multi-omics  aberrations and prognoses in colorectal  cancer patients*.
 
+## Temporary notes by wfy
+
+I think prediction.py will run, but with my testing data it has no enough dimentions and will get error in model.
+
+Besides, to get it run, I manually set some parameters.
+
+In utils/prediction.py:
+```
+loss_function = weibull_loglik_discrete
+optimizer = Adam(lr=0.0001)
+epochs = 1
+```
+in which loss_function can be chosen from the 3 given ones in utils/prediction_model.py
+
+In utils/prediction_data_gen.py:
+```
+n = 1
+xi = 0
+xj = 1
+```
+I don't know its use.
+
+**Haven't apply codes after 'evaluation'.**
+
 ## Requirements
 
 ```
