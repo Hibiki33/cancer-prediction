@@ -11,6 +11,17 @@ torchvision==0.13.0
 tensorflow==2.10
 ```
 
+If you have CUDA 11.6 which is same as me, maybe you can try codes below to install a conda environment to run this:
+
+```shell
+conda create --name your_env_name python=3.10
+conda activate your_env_name
+conda install pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit=11.6 -c pytorch -c conda-forge
+pip install tensorflow==2.10
+pip install pandas
+pip install torchsummary
+```
+
 ## Data Preparation
 
 ### TCGA
