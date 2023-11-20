@@ -4,7 +4,12 @@ The replication of the paper *Histopathology images predict multi-omics  aberrat
 
 ## Requirements
 
-TODO
+```
+python==3.10
+pytorch==1.12.0 
+torchvision==0.13.0
+tensorflow==2.10
+```
 
 ## Data Preparation
 
