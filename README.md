@@ -8,7 +8,20 @@ TODO
 
 ## Data Preparation
 
-TODO
+### TCGA
+
+Data source: [GDC Data Portal](https://portal.gdc.cancer.gov/)
+
+Filter: 
+- Cases
+    - Primary Site: colon, rectum
+    - Program: TCGA
+    - Project: TCGA-COAD, TCGA-READ
+- Files
+    - Data Type: Slide Image
+    - Experimental Strategy: Tissue Slide
+
+Download tool: [gdc-data-transfer-tool](https://gdc.cancer.gov/access-data/gdc-data-transfer-tool)
 
 ## Data Proprocessing
 
