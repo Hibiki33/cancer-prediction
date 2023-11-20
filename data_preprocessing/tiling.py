@@ -1,19 +1,14 @@
 import os
 import sys
 import multiprocessing as mp
-from math import ceil
-from os import listdir
-from os.path import isfile, join
 from PIL import Image
 import openslide
 import argparse
-
+from enum import Enum, IntEnum
 
 
 compression_factor = 1
 Image.MAX_IMAGE_PIXELS = 1e10
-
-from enum import Enum, IntEnum
 
 
 class Axis(Enum):
@@ -108,10 +103,10 @@ def output_jpeg_tiles(full_image_path, full_output_path,
 
 
             # save the image
-            output_subfolder = join(full_output_path, full_image_path.split('/')[-1][:-4])
+            output_subfolder = os.path.join(full_output_path, full_image_path.split('/')[-1][:-4])
             if not os.path.exists(output_subfolder):
                 os.makedirs(output_subfolder)
-            output_image_name = join(output_subfolder,
+            output_image_name = os.path.join(output_subfolder,
                                      full_image_path.split('/')[-1][:-4] + '_' + str(x_index) + '_' + str(
                                          y_index) + '.jpg')
             # print(output_image_name)
@@ -120,32 +115,24 @@ def output_jpeg_tiles(full_image_path, full_output_path,
             tile_number = tile_number + 1
 
 
+def tile_data(input_path,
+              output_path,
+              start_at_image_name,
+              resolution_level,
+              overlap_percentage,
+              window_size):
 
-
-
-def data_process(input_folder_path,
-                 output_folder_path,
-                 start_at_image_name,
-                 resolution_level,
-                 overlap_percentage,
-                 window_size):
-
-
-
-    input_folder_path = args.input_folder_path
-    output_folder_path = args.output_folder_path
-    start_at_image_name = args.start_at_image_name
-    resolution_level = args.resolution_level
-    overlapping_percentage = float("{0:.2f}".format(args.overlap_percentage / 100))
-    window_size = args.window_size
+    input_folder_path = input_path
+    output_folder_path = output_path
+    overlapping_percentage = float("{0:.2f}".format(overlap_percentage / 100))
 
     if not os.path.exists(input_folder_path):
         sys.exit("Error: Input folder doesn't exist")
 
-    if not os.path.exists(output_folder_path):
-        os.makedirs(output_folder_path)
+    os.makedirs(output_folder_path, exist_ok=True)
 
-    image_names = [f for f in listdir(input_folder_path) if isfile(join(input_folder_path, f))]
+    image_names = [f for f in os.listdir(input_folder_path) 
+                   if os.path.isfile(os.path.join(input_folder_path, f))]
 
     if '.DS_Store' in image_names:
         image_names.remove('.DS_Store')
@@ -161,21 +148,28 @@ def data_process(input_folder_path,
         output_jpeg_tiles(full_image_path, output_path, resolution_level, overlapping_percentage, window_size)
 
 
-def multicore(input_folder_path,output_folder_path,start_at_image_name,resolution_level,overlap_percentage,window_size):
+def multicore(input_folder_path,
+              output_folder_path,
+              start_at_image_name,
+              resolution_level,
+              overlap_percentage,
+              window_size):
     
     pool = mp.Pool() 
-    result = pool.map(data_process(input_folder_path,output_folder_path,start_at_image_name,resolution_level,overlap_percentage,window_size), range(10)) 
-    #print(result) 
-
-
-
+    result = pool.map(tile_data(input_folder_path,
+                                output_folder_path,
+                                start_at_image_name,
+                                resolution_level,
+                                overlap_percentage,
+                                window_size), 
+                      range(10)) 
 
 
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser(description='Split a WSI at a specific resolution in a .SVS file into .JPEG tiles.')
-    parser.add_argument("-i", "--input_folder_path", type=str, help="The path to the input folder.", required=True)
-    parser.add_argument("-o", "--output_folder_path", type=str, help="The path to the output folder."
+    parser.add_argument("-i", "--input_path", type=str, help="The path to the input folder.", required=True)
+    parser.add_argument("-o", "--output_path", type=str, help="The path to the output folder."
                                                                     " If output folder doesn't exists at runtime "
                                                                     "the script will create it.",
                         required=True)
@@ -194,11 +188,8 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
-
-
-
-    multicore(args.input_folder_path,
-              args.output_folder_path,
+    multicore(args.input_path,
+              args.output_path,
               args.start_at_image_name,
               args.resolution_level,
               args.overlap_percentage,

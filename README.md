@@ -62,9 +62,21 @@ Download tool: [gdc-data-transfer-tool](https://gdc.cancer.gov/access-data/gdc-d
 
 ## Data Proprocessing
 
+### Refactoring
+
+example:
+
+```
+python ./data_preprocessing/refactor_tcga_files.py --json_name E:/frb-cancer-prediction/TCGA20/metadata.cart.2023-11-20.json --input_path E:/frb-cancer-prediction/TCGA20 --output_path ./dataset/TCGA20/origin
+```
+
 ### Tiling
 
-TODO
+example:
+
+```
+python ./data_preprocessing/tiling.py --input_path ./dataset/TCGA20/origin --output_path ./dataset/TCGA20/tiled
+```
 
 ### Feature Extraction
 
