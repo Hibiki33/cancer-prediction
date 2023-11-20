@@ -18,8 +18,7 @@ conda create --name your_env_name python=3.10
 conda activate your_env_name
 conda install pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit=11.6 -c pytorch -c conda-forge
 pip install tensorflow==2.10
-pip install pandas
-pip install torchsummary
+pip install pandas torchsummary scikit-learn lifelines
 ```
 
 ## Data Preparation
