@@ -1,6 +1,7 @@
 dataset/
 output/
 checkpoints/
+tensorboard/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
