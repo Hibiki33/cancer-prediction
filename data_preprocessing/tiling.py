@@ -5,6 +5,7 @@ from PIL import Image
 import openslide
 import argparse
 from enum import Enum, IntEnum
+from tqdm import tqdm
 
 
 compression_factor = 1
@@ -76,43 +77,47 @@ def output_jpeg_tiles(full_image_path, full_output_path,
     total_number_of_patches = len(x_start_positions) * len(y_start_positions)
     tile_number = 1
 
-    for x_index, x_start_position in enumerate(x_start_positions):
-        for y_index, y_start_position in enumerate(y_start_positions):
+    with tqdm(total=total_number_of_patches) as pbar:
 
-            x_end_position = min(width, x_start_position + window_size)
-            y_end_position = min(height, y_start_position + window_size)
-            patch_width = x_end_position - x_start_position
-            patch_height = y_end_position - y_start_position
+        for x_index, x_start_position in enumerate(x_start_positions):
+            for y_index, y_start_position in enumerate(y_start_positions):
 
-            SVS_level_ratio = get_SVS_level_ratio(resolution_level)
-            patch = img.read_region((x_start_position * SVS_level_ratio, y_start_position * SVS_level_ratio),
-                                    resolution_level,
-                                    (patch_width, patch_height))
-            patch.load()
-            patch_rgb = Image.new("RGB", patch.size, (255, 255, 255))
-            patch_rgb.paste(patch, mask=patch.split()[3])
+                x_end_position = min(width, x_start_position + window_size)
+                y_end_position = min(height, y_start_position + window_size)
+                patch_width = x_end_position - x_start_position
+                patch_height = y_end_position - y_start_position
 
-            print("\n")
-            print("Patch data", x_start_position, y_start_position, resolution_level, patch_width, patch_height)
-            print("Tile size for tile number " + str(tile_number) + ":" + str(patch.size))
+                SVS_level_ratio = get_SVS_level_ratio(resolution_level)
+                patch = img.read_region((x_start_position * SVS_level_ratio, y_start_position * SVS_level_ratio),
+                                        resolution_level,
+                                        (patch_width, patch_height))
+                patch.load()
+                patch_rgb = Image.new("RGB", patch.size, (255, 255, 255))
+                patch_rgb.paste(patch, mask=patch.split()[3])
 
-            # compress the image
-            #patch_rgb = patch_rgb.resize(
-            #    (int(patch_rgb.size[0] / compression_factor), int(patch_rgb.size[1] / compression_factor)),
-            #    Image.ANTIALIAS)
+                # print("\n")
+                # print("Patch data", x_start_position, y_start_position, resolution_level, patch_width, patch_height)
+                # print("Tile size for tile number " + str(tile_number) + ":" + str(patch.size))
+
+                # compress the image
+                #patch_rgb = patch_rgb.resize(
+                #    (int(patch_rgb.size[0] / compression_factor), int(patch_rgb.size[1] / compression_factor)),
+                #    Image.ANTIALIAS)
 
 
-            # save the image
-            output_subfolder = os.path.join(full_output_path, full_image_path.split('/')[-1][:-4])
-            if not os.path.exists(output_subfolder):
-                os.makedirs(output_subfolder)
-            output_image_name = os.path.join(output_subfolder,
-                                     full_image_path.split('/')[-1][:-4] + '_' + str(x_index) + '_' + str(
-                                         y_index) + '.jpg')
-            # print(output_image_name)
-            patch_rgb.save(output_image_name)
-            print("Tile", tile_number, "/", total_number_of_patches, "created")
-            tile_number = tile_number + 1
+                # save the image
+                output_subfolder = os.path.join(full_output_path, full_image_path.split('/')[-1][:-4])
+                if not os.path.exists(output_subfolder):
+                    os.makedirs(output_subfolder)
+                output_image_name = os.path.join(output_subfolder,
+                                        full_image_path.split('/')[-1][:-4] + '_' + str(x_index) + '_' + str(
+                                            y_index) + '.jpg')
+                # print(output_image_name)
+                patch_rgb.save(output_image_name)
+                # print("Tile", tile_number, "/", total_number_of_patches, "created")
+                tile_number = tile_number + 1
+
+                pbar.update(1)
 
 
 def tile_data(input_path,
@@ -145,6 +150,8 @@ def tile_data(input_path,
     for image_name in image_names:
         full_image_path = input_folder_path + '/' + image_name
         output_path = output_folder_path + '/'
+        
+        print(f"Processing image {full_image_path} ...")
         output_jpeg_tiles(full_image_path, output_path, resolution_level, overlapping_percentage, window_size)
 
 
