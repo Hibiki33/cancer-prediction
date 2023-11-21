@@ -188,7 +188,7 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
-    multicore(args.input_path,
+    tile_data(args.input_path,
               args.output_path,
               args.start_at_image_name,
               args.resolution_level,
