@@ -78,11 +78,17 @@ example:
 python ./data_preprocessing/tiling.py --input_path ./dataset/TCGA20/origin --output_path ./dataset/TCGA20/tiled
 ```
 
+### Normalization
+
+There are some unresolved severe problems in code, but I have not noticed any filtering procedure in paper or original code. Temperarily, I selected the normalized images manually. 
+
+example:
+
+```
+python .\data_preprocessing\normalization.py --input_path .\dataset\TCGA20\tiled\ --output_path .\dataset\TCGA20\normalized\ --folders True
+```
+
 ### Feature Extraction
-
-TODO
-
-### Normaliztion
 
 TODO
 
