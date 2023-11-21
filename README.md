@@ -80,7 +80,7 @@ python ./data_preprocessing/tiling.py --input_path ./dataset/TCGA20/origin --out
 
 ### Normalization
 
-There are some unresolved severe problems in code, but I have not noticed any filtering procedure in paper or original code. Temperarily, I selected the normalized images manually. 
+There are some unresolved severe problems in code, but I have not noticed any filtering procedure in paper or original code. In temperary, I selected the normalized images manually. 
 
 example:
 
