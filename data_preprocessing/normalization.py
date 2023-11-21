@@ -2,6 +2,9 @@ import os
 import numpy as np
 from PIL import Image
 import argparse
+from tqdm import tqdm
+import warnings
+# warnings.filterwarnings("ignore")
 
 
 def normalize_color(file_path : str, 
@@ -9,20 +12,50 @@ def normalize_color(file_path : str,
     '''
 
     Input:
-        file_name: file name of image
-        save_path: path to save image
+        file_path: file path of images
+        save_path: path to save images
     Output:
         Inorm: normalized image
     '''
+
+    if not os.path.exists(file_path):
+        exit("Error: File path doesn't exist")
+
+    print(f"Normalizing color in {file_path} ...")
     os.makedirs(save_path, exist_ok=True)
 
     img_names = os.listdir(file_path)
-    for img_name in img_names:
-        img = np.array(Image.open(file_path + img))
+    for img_name in tqdm(img_names):
+        img = np.array(Image.open(os.path.join(file_path, img_name)))
         normalize_staining(img, img_name, save_path=save_path)
 
 
-def normalize_staining(img, name, save_path=None, io=240, alpha=1, beta=0.15):
+def normalize_color_folders(file_path : str,
+                            save_path : str):
+    '''
+
+    Input:
+        file_name: file path list
+        save_path: save path list
+    Output:
+        Inorm: normalized image
+    '''
+    if not os.path.exists(file_path):
+        exit("Error: File path doesn't exist")
+
+    os.makedirs(save_path, exist_ok=True)
+
+    folder_names = os.listdir(file_path)
+    for folder_name in folder_names:
+        normalize_color(os.path.join(file_path, folder_name), os.path.join(save_path, folder_name))
+
+
+def normalize_staining(img : np.ndarray,
+                       name : str, 
+                       save_path : str=None, 
+                       io : int=240, 
+                       alpha : int=1, 
+                       beta : float=0.15):
     ''' Normalize staining appearence of H&E stained images
         
     Input:
@@ -46,16 +79,22 @@ def normalize_staining(img, name, save_path=None, io=240, alpha=1, beta=0.15):
     
     # reshape image
     img = img.reshape((-1, 3))
-
-    # calculate optical density
-    OD = -np.log((img.astype(np.float) + 1) / io)
     
+    # calculate optical density
+    # OD = -np.log((img.astype(np.float64) + 1) / io)
+    OD = -np.log((img.astype(np.float64) + 1) / io)
+
     # remove transparent pixels
     ODhat = OD[~np.any(OD < beta, axis=1)]
-        
+
+    # special case if too few pixels are left
+    if ODhat.shape[0] < 150:
+        return None
+
     # compute eigenvectors
     eigvals, eigvecs = np.linalg.eigh(np.cov(ODhat.T))
-    
+    # eigvals, eigvecs = np.linalg.eig(np.cov(ODhat.T))
+
     #eigvecs *= -1
     
     #project on the plane spanned by the eigenvectors corresponding to the two 
@@ -86,11 +125,11 @@ def normalize_staining(img, name, save_path=None, io=240, alpha=1, beta=0.15):
     # normalize stain concentrations
     maxC = np.array([np.percentile(C[0,:], 99), np.percentile(C[1,:],99)])
     tmp = np.divide(maxC, maxCRef)
-    C2 = np.divide(C,tmp[:, np.newaxis])
+    C2 = np.divide(C, tmp[:, np.newaxis])
     
     # recreate the image using reference mixing matrix
     Inorm = np.multiply(io, np.exp(-HERef.dot(C2)))
-    Inorm[Inorm>  255] = 254
+    Inorm[Inorm > 255] = 254
     Inorm = np.reshape(Inorm.T, (h, w, 3)).astype(np.uint8)  
     
     # unmix hematoxylin and eosin
@@ -103,15 +142,20 @@ def normalize_staining(img, name, save_path=None, io=240, alpha=1, beta=0.15):
     E = np.reshape(E.T, (h, w, 3)).astype(np.uint8)
     
     if save_path is not None:
-        Image.fromarray(Inorm).save(save_path + name)  
+        Image.fromarray(Inorm).save(os.path.join(save_path, name))  
 
     return Inorm
 
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file_path', type=str, default='./')
-    parser.add_argument('--save_path', type=str, default='./normalized')
+    parser.add_argument('--input_path', type=str, default='./')
+    parser.add_argument('--output_path', type=str, default='./normalized')
+    parser.add_argument('--folders', type=bool, default=False)
 
     args = parser.parse_args()
-    normalize_color(args.file_path, args.save_path)
+
+    if args.folders:
+        normalize_color_folders(args.input_path, args.output_path)
+    else:
+        normalize_color(args.input_path, args.output_path)
