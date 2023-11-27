@@ -9,7 +9,7 @@ from torchvision import models
 from torch import optim
 import argparse
 from tqdm import tqdm
-from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard.writer import SummaryWriter
 
 from .dataset import ResNetDataset
 
@@ -79,7 +79,7 @@ def train(train_data_path : str, valid_data_path : str, model_save_path : str, r
         
         # Training Stage
         
-        with tqdm(train_Dataloader, desc = 'Train', file = sys.stdout) as iterator:
+        with tqdm(train_Dataloader, desc='Train', file=sys.stdout) as iterator:
             iter = 0
             for imgs, gts in iterator:
                 imgs, gts = imgs.to(device), gts.to(device)
