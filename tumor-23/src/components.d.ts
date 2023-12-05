@@ -9,7 +9,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     BaseHeader: typeof import('./components/layouts/BaseHeader.vue')['default']
     BaseSide: typeof import('./components/layouts/BaseSide.vue')['default']
+    Diagnosis: typeof import('./components/Diagnosis.vue')['default']
+    DoDiagnosis: typeof import('./components/DoDiagnosis.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCol: typeof import('element-plus/es')['ElCol']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -19,6 +22,7 @@ declare module 'vue' {
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElMenuItemGroup: typeof import('element-plus/es')['ElMenuItemGroup']
+    ElRow: typeof import('element-plus/es')['ElRow']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTag: typeof import('element-plus/es')['ElTag']
@@ -28,5 +32,6 @@ declare module 'vue' {
     HelloWorld0: typeof import('./components/HelloWorld0.vue')['default']
     Logos: typeof import('./components/Logos.vue')['default']
     Test: typeof import('./components/Test.vue')['default']
+    WelcomeHome: typeof import('./components/WelcomeHome.vue')['default']
   }
 }
