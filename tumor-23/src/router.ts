@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Diagnose from "./Diagnose.vue";
 import Welcome from "./Welcome.vue";
+import Result from "~/components/Result.vue";
+import Upload from "~/components/upload.vue";
 
 const routes = [
     {
@@ -13,6 +15,11 @@ const routes = [
         name: "Diagnose",
         component: Diagnose,
     },
+    {
+        path: "/upload",
+        name: "upload",
+        component: Upload,
+    }
     // 其他页面的路由配置
 ];
 

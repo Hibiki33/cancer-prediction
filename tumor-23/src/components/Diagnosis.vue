@@ -30,6 +30,7 @@
           <button class="upload-button" @click="uploadToServer" v-show="1">上传到服务器</button>
         </div>
       </div>
+      <button @click="openResultWindow(0)">查看结果</button>
     </el-col>
     <el-col :span="12">
       <div class="title1">
@@ -60,11 +61,14 @@
           <button class="upload-button" @click="uploadToServer" v-show="1">上传到服务器</button>
         </div>
       </div>
+      <button @click="openResultWindow(1)">查看结果</button>
     </el-col>
   </el-row>
 </template>
 
 <script>
+import {doPostPicture} from "~/api/api";
+
 const fits = ['fill']
 
 export default {
@@ -104,7 +108,19 @@ export default {
     uploadToServer() {
       // 将照片上传到远程服务器
       // 你可以在这里使用axios或其他方法将照片上传到服务器
-      alert('上传成功');
+      doPostPicture('hello');
+      // alert('上传成功');
+    },
+    openResultWindow(index) {
+      const uploadResultKey = `uploadResult${index}`;
+      const result = this[uploadResultKey] || '暂无结果'; // 如果结果为空，显示默认消息
+
+      // 打开一个新窗口并显示结果
+      const resultWindow = window.open('', '_blank');
+      resultWindow.document.write(`
+<p>${result}</p>
+<img src="https://pic.imgdb.cn/item/6537baf1c458853aef11adef.jpg" alt="Uploaded Image" style="max-width: 100%; max-height: 100%;"/>
+`);
     },
   },
 };
