@@ -3,6 +3,7 @@ import Diagnose from "./Diagnose.vue";
 import Welcome from "./Welcome.vue";
 import Result from "~/components/Result.vue";
 import Upload from "~/components/upload.vue";
+import WebsiteIntroduce from "~/components/WebsiteIntroduce.vue";
 
 const routes = [
     {
@@ -16,9 +17,9 @@ const routes = [
         component: Diagnose,
     },
     {
-        path: "/upload",
-        name: "upload",
-        component: Upload,
+        path: "/intro",
+        name: "WebsiteIntroduce",
+        component: WebsiteIntroduce
     }
     // 其他页面的路由配置
 ];
