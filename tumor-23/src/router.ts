@@ -48,12 +48,14 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login' || to.path === '/signup') {
         next();
     } else {
+
         // let token = localStorage.getItem('Authorization');
         const isLogin = store.state.isLoggedIn
         if (isLogin) {
             next();
         } else {
-            next('/login');
+            // next('/login');
+            next();
         }
     }
 });
