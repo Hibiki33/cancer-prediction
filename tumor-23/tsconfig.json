@@ -12,12 +12,14 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "paths": {
-      "~/*": ["src/*"]
+      "~/*": ["src/*"],
+      "vuex": ["./node_modules/vuex/types"]
     },
     "skipLibCheck": true
   },
   "vueCompilerOptions": {
     "target": 3
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules"]
 }
