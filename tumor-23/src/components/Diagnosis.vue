@@ -25,12 +25,20 @@
           </li>
         </ul>
         <div class="upload-button-wrapper">
-          <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput" @change="selectPicture">
-          <button class="select-button" @click="openFileInput" v-show="showInputImg">选择照片</button>
-          <button class="upload-button" @click="uploadToServer" v-show="1">上传到服务器</button>
+          <div class="button-container">
+            <el-row class="mb-4"> 
+                <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput" @change="selectPicture">
+                <el-button type="primary" @click="openFileInput" v-show="showInputImg">选择照片</el-button>  
+            </el-row>
+            <el-row class="mb-4"> 
+              <el-button type="primary" @click="uploadToServer" v-show="1">上传到服务器</el-button>
+            </el-row>
+            <el-row class="mb-4"> 
+              <el-button type="primary" @click="openResultWindow(0)">查看结果</el-button>
+            </el-row>
+          </div>
         </div>
       </div>
-      <button @click="openResultWindow(0)">查看结果</button>
     </el-col>
     <el-col :span="12">
       <div class="title1">
@@ -56,12 +64,20 @@
           </li>
         </ul>
         <div class="upload-button-wrapper">
-          <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput1" @change="selectPicture1">
-          <button class="select-button" @click="openFileInput1" v-show="showInputImg1">选择照片</button>
-          <button class="upload-button" @click="uploadToServer" v-show="1">上传到服务器</button>
+          <div class="button-container">
+            <el-row class="mb-4"> 
+                <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput" @change="selectPicture">
+                <el-button type="primary" @click="openFileInput1" v-show="showInputImg1">选择照片</el-button>  
+            </el-row>
+            <el-row class="mb-4"> 
+              <el-button type="primary" @click="uploadToServer" v-show="1">上传到服务器</el-button>
+            </el-row>
+            <el-row class="mb-4"> 
+              <el-button type="primary" @click="openResultWindow(1)">查看结果</el-button>
+            </el-row>
+          </div>
         </div>
       </div>
-      <button @click="openResultWindow(1)">查看结果</button>
     </el-col>
   </el-row>
 </template>
@@ -196,4 +212,18 @@ export default {
 .hidden-input {
   display: none;
 }
+
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.el-row {
+  margin-top: 10px;  /* 上间隔 */
+  margin-bottom: 10px; /* 下间隔 */
+}
+
 </style>
