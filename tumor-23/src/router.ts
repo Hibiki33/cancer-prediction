@@ -54,8 +54,7 @@ router.beforeEach((to, from, next) => {
         if (isLogin) {
             next();
         } else {
-            // next('/login');
-            next();
+            next('/login');
         }
     }
 });

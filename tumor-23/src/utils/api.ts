@@ -13,8 +13,10 @@ const instance: AxiosInstance = axios.create({
 instance.interceptors.request.use(
     config => {
         // 在这里通过本地存储或状态管理获取 token
-        if (store.state.authToken) {
-            config.headers.Authorization = "Bearer " + store.state.authToken;
+        if (localStorage._token) {
+            config.headers.Authorization = "Bearer " + localStorage._token;
+        } else if (localStorage._refresh_token) {
+            config.headers.Authorization = "Bearer " + localStorage._refresh_token;
         }
         return config;
     },
