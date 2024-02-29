@@ -1,11 +1,13 @@
 from datetime import timedelta
 
 import jwt
+from django.conf import settings
 from django.utils import timezone
 from django.views.decorators.http import require_POST, require_GET
 
+from apps.user.models import User
 
-@response_wrapper
+
 @require_GET
 def refresh_token(request):
     """
