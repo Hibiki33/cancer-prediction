@@ -1,51 +1,102 @@
 <template>
-  <el-row justify="center">
-    <el-col :span="12">
-      <div>
-        <h3>
-          测试项目
-        </h3>
+  <div class="base_container">
+    <div class="files_column">
+      <div class="image">
+        <div v-if="chooseFlag">
+          <img :src="imgUrl" alt="Preview" class="image-preview">
+        </div>
+        <div class="placeholder" v-else>
+          <img src="https://pic.imgdb.cn/item/65ab4329871b83018a958c6b.png" alt="Placeholder" class="image-placeholder">
+        </div>
       </div>
-      <div class="uploadFile">
-        <ul v-show="uploadImg0.length !== 0" class="image-list">
-          <li v-for="(item, index) in uploadImg0" :key="index" class="addPic">
-            <div class="image-wrapper">
-              <img :src="item.src" class="uploaded-image">
-              <div class="image-overlay">
-                <p>{{ item.name }}</p>
-              </div>
-            </div>
-            <div class="elem-image">
-              <div v-for="fit in fits" :key="fit" class="block">
-                <span class="demonstration">{{ fit }}</span>
-                <el-image style="width: 100px; height: 100px" :src="item.src" :fit="fit" />
-              </div>
-            </div>
-          </li>
-        </ul>
-        <div class="upload-button-wrapper">
-          <div class="button-container">
-            <el-row class="mb-4"> 
+      <div class="result">
+        <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="schedule"
+            :autosize="{ minRows: 5}"
+            readonly>
+        </el-input>
+      </div>
+    </div>
+    <div class="buttons_column">
+      <div class="upload-button-wrapper">
+        <div class="button-container">
+          <div class="button_gap">
+            <el-row class="mb-4">
                 <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput" @change="selectPicture">
                 <el-button type="primary" @click="openFileInput" v-show="showInputImg">
                   选择照片
                 </el-button>
             </el-row>
-            <el-row class="mb-4"> 
+          </div>
+          <div class="button_gap">
+            <el-row class="mb-4">
               <el-button type="primary" @click="uploadToServer" v-show="1">
                 上传到服务器
               </el-button>
             </el-row>
-            <el-row class="mb-4"> 
-              <el-button type="primary" :disabled="!flag" @click="showResult()">
-                {{ flag ? '查看结果' : '等待结果' }}
+          </div>
+          <div class="button_gap">
+            <el-row class="mb-4">
+              <el-button type="primary" :disabled="!resultFlag" @click="showResult()">
+                {{ resultFlag ? '查看结果' : '等待结果' }}
               </el-button>
             </el-row>
-            <div class="multiline"> {{schedule}} </div>
           </div>
+
         </div>
       </div>
-    </el-col>
+    </div>
+  </div>
+  <el-row justify="center">
+<!--    <el-col :span="12">-->
+<!--      <div>-->
+<!--        <h3>-->
+<!--          测试项目-->
+<!--        </h3>-->
+<!--      </div>-->
+<!--      <div class="uploadFile">-->
+<!--        <ul v-show="uploadImg0.length !== 0" class="image-list">-->
+<!--          <li v-for="(item, index) in uploadImg0" :key="index" class="addPic">-->
+<!--            <div class="image-wrapper">-->
+<!--              <img :src="item.src" class="uploaded-image">-->
+<!--              <div class="image-overlay">-->
+<!--                <p>{{ item.name }}</p>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="elem-image">-->
+<!--              <div v-for="fit in fits" :key="fit" class="block">-->
+<!--                <span class="demonstration">{{ fit }}</span>-->
+<!--                <el-image style="width: 100px; height: 100px" :src="item.src" :fit="fit" />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--        <div class="upload-button-wrapper">-->
+<!--          <div class="button-container">-->
+<!--            <el-row class="mb-4"> -->
+<!--                <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput" @change="selectPicture">-->
+<!--                <el-button type="primary" @click="openFileInput" v-show="showInputImg">-->
+<!--                  选择照片-->
+<!--                </el-button>-->
+<!--            </el-row>-->
+<!--            <el-row class="mb-4"> -->
+<!--              <el-button type="primary" @click="uploadToServer" v-show="1">-->
+<!--                上传到服务器-->
+<!--              </el-button>-->
+<!--            </el-row>-->
+<!--            <el-row class="mb-4"> -->
+<!--              <el-button type="primary" :disabled="!chooseFlag" @click="showResult()">-->
+<!--                {{ chooseFlag ? '查看结果' : '等待结果' }}-->
+<!--              </el-button>-->
+<!--            </el-row>-->
+<!--            <div class="multiline"> {{schedule}} </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </el-col>-->
 <!--    <el-col :span="12">-->
 <!--      <div class="title1">-->
 <!--        <h3>-->
@@ -99,9 +150,11 @@ export default {
     return {
       uploadImg0: [],
       uploadImg1: [],
-      schedule: "",
+      schedule: "暂无结果",
       file: "",
-      flag: false,
+      chooseFlag: false,
+      imgUrl: null,
+      resultFlag: false,
     };
   },
   computed: {
@@ -131,9 +184,12 @@ export default {
     selectPicture(e) {
       this.uploadImg0 = [];
       this.file = e.target.files[0];
-      const src = window.URL.createObjectURL(this.file);
-      console.log(file)
-      this.uploadImg0.push({ src, name: this.file.name });
+      this.imgUrl = window.URL.createObjectURL(this.file);
+      this.chooseFlag = true;
+      const url = this.imgUrl;
+      console.log(this.file);
+      console.log(this.imgUrl);
+      this.uploadImg0.push({ url, name: this.file.name });
     },
     selectPicture1(e) {
       this.uploadImg1 = [];
@@ -146,10 +202,10 @@ export default {
       // 你可以在这里使用axios或其他方法将照片上传到服务器
       doPostPicture(this.file).then(
           res => {
-            this.flag = true
+            this.resultFlag = true
           }
       );
-      // alert('上传成功');
+      alert('上传成功');
     },
     openResultWindow(index) {
       const uploadResultKey = `uploadResult${index}`;
@@ -167,6 +223,37 @@ export default {
 </script>
 
 <style scoped>
+
+.base_container {
+  display: flex;
+}
+
+.files_column {
+  flex: 5;
+}
+
+.image-preview, .image-placeholder {
+  max-width: 900px;
+  max-height: 600px;
+}
+
+.buttons_column {
+  flex: 3;
+}
+
+.image {
+  flex: 2;
+}
+
+.result {
+  flex: 1;
+}
+
+.button_gap {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
 .uploadFile {
   display: flex;
   flex-direction: column;
@@ -243,6 +330,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  margin-top: 50px;
 }
 
 .el-row {
