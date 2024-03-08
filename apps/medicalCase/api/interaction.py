@@ -23,16 +23,21 @@ schedule = '''第一周期：
 
 @require_GET
 def get_schedule(request):
-
+    print(request.GET)
     return JsonResponse({"schedule": schedule})
 
-@require_POST
+# @require_POST
 def upload_picture(request):
-    if request.FILES['file']:
-        uploaded_file = request.FILES['file']
+    print("entering upload_picture")
+    print(request.FILES)
+    if request.FILES:
+        print(request.FILES)
+        uploaded_file = request.FILES[0]
         fs = FileSystemStorage()
         fs.save(uploaded_file.name, uploaded_file)
         return JsonResponse({'message': 'success'}, status=200)
 
-    return JsonResponse({'message': 'success'}, status=501)
+    return JsonResponse({'message': 'sucess but unable to recieve file'}, status=501)
 
+
+# curl  localhost:8000/medicalCase/upload_picture/ -F "file=/mnt/d/MyFileAtD/cancer-prediction/local_media/427b05a08c4d60b03ea2c0a9c8ea523.jpg" 

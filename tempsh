@@ -1,0 +1,2 @@
+curl localhost:8000/medicalCase/upload_pic/ -F  'file_data=@427b05a08c4d60b03ea2c0a9c8ea523.jpg' -F 'file_name=test.jpg' -v -X POST
+curl localhost:8000/medicalCase/upload_pic/ -F  'file_data=@295053e3e99f1ccfeee7ab59a24dfe7.jpg' -F 'file_name=test.jpg' -v -X POST
