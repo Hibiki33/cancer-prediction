@@ -1,12 +1,13 @@
 <template>
   <div class="background">
     <div class="welcome-container">
-      <h1>{{ title }}</h1>
-      <ul>
-        <li v-for="photo in photos" :key="photo">
-          <img :src="photo" alt="Photo" class="photo-item" />
-        </li>
-      </ul>
+      <h1 style="letter-spacing: 10px; font-size: 60px; font-family: cursive">{{ title }}</h1>
+<!--      <ul>-->
+<!--        <li v-for="photo in photos" :key="photo">-->
+<!--          <img :src="photo" alt="Photo" class="photo-item" />-->
+<!--        </li>-->
+<!--      </ul>-->
+
     </div>
   </div>
 </template>
@@ -16,7 +17,6 @@
 
 const Welcome = defineProps<{
   title: string;
-  photos: string[];
 }>();
 
 const welcomeMessage = "欢迎来到我们的网站！这里是欢迎信息！！";

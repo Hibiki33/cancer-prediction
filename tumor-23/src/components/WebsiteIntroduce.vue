@@ -7,14 +7,14 @@
     <div class="left-panel">
       <!-- 左侧内容 -->
       <div class="intro-item">
-        <img src="https://pic.imgdb.cn/item/65ab4329871b83018a958c6b.png" alt="介绍图片1" class="item-image-left">
+        <img src="/zhongliu.png" alt="介绍图片1" class="item-image-left">
       </div>
       <div class="intro-item">
         <div class="item-title-left">
-          标题
+          技术细节
         </div>
         <div class="item-content-left">
-          内容。。。。。。。。。。
+          肿瘤灵知是一款基于人工智能技术的一体化医疗平台，旨在为医患双方提供精准的癌症预后决策。
         </div>
       </div>
 
@@ -24,10 +24,10 @@
       <!-- 右侧内容 -->
       <div class="intro-item">
         <div class="item-title-right">
-          标题
+          平台简介
         </div>
         <div class="item-content-right">
-          内容。。。。。。。。。。
+          肿瘤灵知是一款基于人工智能技术的一体化医疗平台，旨在为医患双方提供精准的癌症预后决策。
         </div>
       </div>
       <div class="intro-item">
@@ -72,36 +72,49 @@ body {
 .intro-item {
   height: 300px;
   padding: 20px;
+  position: relative;
 }
 
 .item-title-right {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
   text-align: left;
+  letter-spacing: 6px;
   padding: 20px;
 }
 
 .item-content-right {
-  font-size: 16px;
+  font-size: 20px;
   color: #666;
   text-align: left;
+  max-width: 400px;
+  position: absolute;
+  left: 30px;
+  line-height: 1.5;
+  letter-spacing: 3px;
 }
 
 .item-title-left {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
   text-align: right;
+  letter-spacing: 6px;
   padding: 20px;
 }
 
 .item-content-left {
-  font-size: 16px;
+  font-size: 20px;
   color: #666;
-  text-align: right;
+  text-align: left;
+  max-width: 400px;
+  position: absolute;
+  right: 30px;
+  line-height: 1.5;
+  letter-spacing: 3px;
 }
 
 .item-image-left {

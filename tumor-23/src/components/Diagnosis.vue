@@ -22,36 +22,39 @@
           </el-input>
         </div>
       </div>
+      <div style="width: 1px; height: 800px; background-color: #0a0a0a;"></div>
       <div class="buttons_column">
         <div class="upload-button-wrapper">
           <div class="button-container">
             <div class="button_gap">
               <el-row>
                 <input type="file" id="file" accept="image/*" class="hidden-input" ref="fileInput" @change="selectPicture">
-                <el-button type="primary" @click="openFileInput" v-show="showInputImg">
+                <el-button type="primary" @click="openFileInput" v-show="showInputImg" round>
                   选择照片
                 </el-button>
               </el-row>
             </div>
             <div class="button_gap">
               <el-row>
-                <el-button type="primary" @click="uploadToServer" v-show="1">
+                <el-button type="primary" @click="uploadToServer" v-show="1" round>
                   上传到服务器
                 </el-button>
               </el-row>
             </div>
             <div class="button_gap">
               <el-row>
-                <el-button type="primary" :disabled="!resultFlag" @click="showResult()">
+                <el-button type="info" :disabled="!resultFlag" @click="showResult()" round>
                   {{ resultFlag ? '查看结果' : '等待结果' }}
                 </el-button>
               </el-row>
             </div>
             <div class="button_gap">
               <el-row>
-                <el-upload :type="file" :on-change="handleUpload" :auto-upload="false" :multiple="false" :show-file-list="false">
-                  上传文件
-                </el-upload>
+                <el-button type="success" round>
+                  <el-upload :type="file" :on-change="handleUpload" :auto-upload="false" :multiple="false" :show-file-list="false">
+                    上传文件
+                  </el-upload>
+                </el-button>
               </el-row>
             </div>
 
@@ -276,76 +279,13 @@ html {
   margin-bottom: 50px;
 }
 
-.uploadFile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.image-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  list-style: none;
-}
-
-.addPic {
-  position: relative;
-}
-
-.image-wrapper {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.uploaded-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  pointer-events: none; /* 防止遮罩层遮挡文件选择框 */
-}
-
 .upload-button-wrapper {
   position: relative;
-}
-
-.select-button,
-.upload-button {
-  width: 200px;
-  height: 40px;
-  background-color: #409eff;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.select-button:hover,
-.upload-button:hover {
-  background-color: #66b1ff;
 }
 
 .hidden-input {
   display: none;
 }
-
 
 .button-container {
   display: flex;
@@ -353,15 +293,7 @@ html {
   align-items: center;
   justify-content: space-between;
   margin-top: 50px;
-}
-
-.el-row {
-  margin-top: 10px;  /* 上间隔 */
-  margin-bottom: 10px; /* 下间隔 */
-}
-
-.multiline {
-  white-space: pre-line;
+  max-width: 400px;
 }
 
 </style>
