@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "paths": {
-      "~/*": ["src/*"],
+      "~/*": ["./src/*"],
       "vuex": ["./node_modules/vuex/types"]
     },
     "skipLibCheck": true

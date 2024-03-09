@@ -6,7 +6,7 @@ import { toggleDark } from "~/composables";
   <el-menu class="el-menu-demo" mode="horizontal">
     <router-link to="/" class="router-link">
       <el-menu-item index="1">
-        Tumor Detect
+        首页
       </el-menu-item>
     </router-link>
 <!--    <el-sub-menu index="2">-->
@@ -23,10 +23,10 @@ import { toggleDark } from "~/composables";
 <!--    </el-sub-menu>-->
     <router-link to="/diagnose" class="router-link">
       <el-menu-item index="3" >
-        Diagnosis
+        上传
       </el-menu-item>
     </router-link>
-    <el-menu-item index="4" disabled>Info</el-menu-item>
+<!--    <el-menu-item index="4" disabled>Info</el-menu-item>-->
     <el-menu-item h="full" @click="toggleDark()">
       <button
         class="border-none w-full bg-transparent cursor-pointer"

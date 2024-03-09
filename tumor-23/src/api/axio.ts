@@ -13,7 +13,7 @@ const startLoading = () => {
     const options: Options = {
         lock: true,
         text: "加载中...",
-        background: 'rgba(0,0,0,0.7)'
+        background: '#FFFFFF'
     }
     loading = ElLoading.service(options);
 }
@@ -29,7 +29,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/'
 // http request 拦截器
 axios.interceptors.request.use(function (config){
     // 在发送请求前做些什么
-    startLoading();
+    // startLoading();
     //config.headers['X-Requested-With'] = 'XMLHttpRequest'
     if (localStorage.eleToken) {
         config.headers.Authorization = "Bearer " + localStorage.eleToken;
