@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django import forms
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .models import Image
+from .models import Image, FileChunk
 
 class UploadFileForm(forms.Form):
     file_name = forms.CharField(max_length=50)
@@ -35,4 +35,46 @@ def handle_uploaded_file(fn, f):
         for chunk in f.chunks():
             destination.write(chunk)
     return 'media/images/'+fn
-    
+
+
+@csrf_exempt
+def upload_chunk(request):
+    if request.method == 'POST':
+        file_chunk = request.FILES.get('chunk')
+        chunk_hash = request.POST.get('chunkHash')
+        file_hash = request.POST.get('fileHash')
+        filename = request.POST.get('fileName')
+        index = request.POST.get('index')
+        size = file_chunk.size if file_chunk else 0
+
+        if file_chunk and chunk_hash and file_hash and filename is not None:
+            # 保存文件块到磁盘
+            chunk_model = FileChunk(
+                file_hash=file_hash,
+                chunk_hash=chunk_hash,
+                index=index,
+                filename=filename,
+                size=size,
+                chunk=file_chunk
+            )
+            chunk_model.save()
+
+            return JsonResponse({'message': 'Chunk uploaded successfully'}, status=200)
+        else:
+            return JsonResponse({'error': 'Missing data'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request'}, status=405)
+
+def combine_chunks(file_hash):
+    chunks = FileChunk.objects.filter(file_hash=file_hash).order_by('index')
+    file_path = f'media/{file_hash}'
+
+    with open(file_path, 'wb') as file:
+        for chunk in chunks:
+            with chunk.chunk.open('rb') as chunk_file:
+                file.write(chunk_file.read())
+
+    # 重组完成后，您可以删除原始的文件块记录或文件，以节省空间
+    # FileChunk.objects.filter(file_hash=file_hash).delete()
+
+    return file_path
