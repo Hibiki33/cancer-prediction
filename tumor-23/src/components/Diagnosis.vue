@@ -266,6 +266,7 @@ html {
 
 .image {
   flex: 2;
+  border: thick double #CAE2F5;
 }
 
 .result {

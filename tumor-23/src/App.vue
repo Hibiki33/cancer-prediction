@@ -27,3 +27,5 @@
   height: calc(100vh - var(--ep-menu-item-height) - 3px);
 }
 </style>
+<script setup lang="ts">
+</script>

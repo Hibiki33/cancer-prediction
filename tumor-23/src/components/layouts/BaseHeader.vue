@@ -41,6 +41,7 @@ import { toggleDark } from "~/composables";
       </button>
     </el-menu-item>
   </el-menu>
+  <div style="width: 100%; height: 10px; background-color: #F9F9FB"></div>
 </template>
 
 <style>
