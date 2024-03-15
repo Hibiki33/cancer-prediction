@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('apps.user.urls')),
     path('medicalCase/', include('apps.medicalCase.urls')),
+    path('fileManager/', include('apps.fileManager.urls')),
     re_path(r'media/(?P<path>.*)',serve,{'document_root':settings.MEDIA_ROOT}),
     re_path(r'images/(?P<path>.*)', serve,{'document_root':settings.MEDIA_ROOT+'/images/'}),
 ]
