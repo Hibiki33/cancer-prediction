@@ -5,3 +5,5 @@ export const doPostPicture = (data: any) => {
     formData.append('file', data)
     return axios.post('medicalCase/upload_picture/', formData);
 }
+
+

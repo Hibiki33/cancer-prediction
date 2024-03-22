@@ -1,9 +1,9 @@
 import SparkMD5 from 'spark-md5'
-
+import axios from '~/api/axio'
 let fileHash:any
 let fileName:any
 
-export const handleUpload = (file, fileList) => {
+export const handleUpload = async (file: any, fileList: any) => {
     console.log('开始上传文件')
     if (!file) {
         return
@@ -13,8 +13,11 @@ export const handleUpload = (file, fileList) => {
     let fileName = file.name
     console.log(fileName)
     let fileChunkList = createFileChunks(file.raw)
-    calculateHash(fileChunkList).then(
+    const hashPromise = calculateHash(fileChunkList);
+    await hashPromise
+    hashPromise.then(
         hash => {
+            console.log(hash)
             fileHash = hash
             uploadChunks(fileChunkList).then(r => {})
         }
@@ -52,7 +55,7 @@ const calculateHash = async (fileChunks: Array<{file: Blob}>) => {
         reader.readAsArrayBuffer(new Blob(chunks))
         reader.onload = (e:Event) => {
             spark.append((<FileReader>e?.target)?.result as ArrayBuffer)
-            resolve(spark.end)
+            resolve(spark.end())
         }
     })
 }
@@ -80,10 +83,7 @@ const uploadChunks = async (fileChunks: Array<{file: Blob}>) => {
     const taskPool: any = []
 
     while (index < formDatas.length) {
-        const task = fetch('http://127.0.0.1:8000/medicalCase/upload_picture/', {
-            method: 'POST',
-            body: formDatas[index],
-        })
+        const task = axios.post('fileManager/uploadc/', formDatas[index])
 
         task.then(() => {
             taskPool.splice(taskPool.findIndex((item: any) => item === task))
@@ -97,6 +97,12 @@ const uploadChunks = async (fileChunks: Array<{file: Blob}>) => {
         // percentage.value = (index / formDatas.length * 100).toFixed(0)
     }
 
-    await Promise.all(taskPool)
+    const formData = new FormData();
+    formData.append('fileHash', fileHash);
+    formData.append('fileName', fileName);
+
+    await Promise.all(taskPool).then(() => {    // 发送 merge 请求
+        axios.post('fileManager/merge/', formData)
+    })
 
 }
