@@ -5,7 +5,7 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .models import Image, FileChunk
-from PIL import Pimage
+from PIL import Image as PImage
 from openslide import OpenSlide
 import numpy as np
 from django.core.files.base import ContentFile
@@ -100,7 +100,7 @@ def compress_image(file_path, file_hash, size=(1024, 1024)):
     x = x * size[0] // k
     y = y * size[1] // k
     slide_image = slide_image.crop((0,0,k,k))
-    slide_image = slide_image.resize(size, Image.Resampling.LANCZOS)
+    slide_image = slide_image.resize(size, PImage.Resampling.LANCZOS)
     
     # 保存压缩后的图像到BytesIO对象
     output_image_path = f'media/compressed/{file_hash}.png'
