@@ -5,6 +5,11 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .models import Image, FileChunk
+from PIL import Pimage
+from openslide import OpenSlide
+import numpy as np
+from django.core.files.base import ContentFile
+from io import BytesIO
 
 class UploadFileForm(forms.Form):
     file_name = forms.CharField(max_length=50)
@@ -65,9 +70,11 @@ def upload_chunk(request):
 
     return JsonResponse({'error': 'Invalid request'}, status=405)
 
-def combine_chunks(file_hash):
+@csrf_exempt
+def combine_chunks(request):
+    file_hash = request.GET.get('file_hash')
     chunks = FileChunk.objects.filter(file_hash=file_hash).order_by('index')
-    file_path = f'media/{file_hash}'
+    file_path = f'media/{file_hash}.svg'
 
     with open(file_path, 'wb') as file:
         for chunk in chunks:
@@ -75,6 +82,29 @@ def combine_chunks(file_hash):
                 file.write(chunk_file.read())
 
     # 重组完成后，您可以删除原始的文件块记录或文件，以节省空间
-    # FileChunk.objects.filter(file_hash=file_hash).delete()
+    FileChunk.objects.filter(file_hash=file_hash).delete()
 
-    return file_path
+    compressed_path = compress_image(file_path, file_hash)
+
+    return JsonResponse({'file_path': file_path, 'compressed_path': compressed_path}, status=200)
+
+@csrf_exempt
+def compress_image(file_path, file_hash, size=(1024, 1024)):
+    # 打开原始图像
+    slide = OpenSlide(file_path)
+    level = 2
+    slide_image = slide.read_region((0, 0), level, slide.level_dimensions[level])
+    slide_image = slide_image.convert("RGB")
+    x,y = slide_image.size
+    k = min(x,y)
+    x = x * size[0] // k
+    y = y * size[1] // k
+    slide_image = slide_image.crop((0,0,k,k))
+    slide_image = slide_image.resize(size, Image.Resampling.LANCZOS)
+    
+    # 保存压缩后的图像到BytesIO对象
+    output_image_path = f'media/compressed/{file_hash}.png'
+    slide_image.save(output_image_path)
+    
+    # 创建一个Django可用的文件对象
+    return output_image_path

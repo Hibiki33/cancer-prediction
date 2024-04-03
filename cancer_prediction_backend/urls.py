@@ -27,4 +27,6 @@ urlpatterns = [
     path('fileManager/', include('apps.fileManager.urls')),
     re_path(r'media/(?P<path>.*)',serve,{'document_root':settings.MEDIA_ROOT}),
     re_path(r'images/(?P<path>.*)', serve,{'document_root':settings.MEDIA_ROOT+'/images/'}),
+    re_path('medSam/', include('apps.medSam.urls')),
+    
 ]

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.user',
     'apps.medicalCase',
     'apps.fileManager',
+    'apps.medSam',
     'corsheaders',
     'rest_framework'
 ] 
