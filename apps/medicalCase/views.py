@@ -7,9 +7,19 @@ from django.conf import settings
 from .models import Image, FileChunk
 from PIL import Image as PImage
 from openslide import OpenSlide
-import numpy as np
-from django.core.files.base import ContentFile
-from io import BytesIO
+
+@csrf_exempt
+def upload_case(request):
+    return JsonResponse({'status': 200})
+
+@csrf_exempt
+def get_case_prediction(request):
+    return JsonResponse({
+        'case': '1.结肠癌 KRAS基因突变阳性，考虑使用靶向药物如西妥昔单抗来抑制癌细胞生长,2.结肠癌晚期，使用PD-1抑制剂进行免疫治疗.',
+        'prediction': '五年内生存率（5-year survival rate）33.1%；总体生存期（OS）12.1（m）；无进展生存期（PFS）7.6（m）；无病生存期（DFS）15.2（m)',
+        'status': 200
+        })
+    
 
 class UploadFileForm(forms.Form):
     file_name = forms.CharField(max_length=50)
@@ -71,8 +81,7 @@ def upload_chunk(request):
     return JsonResponse({'error': 'Invalid request'}, status=405)
 
 @csrf_exempt
-def combine_chunks(request):
-    file_hash = request.GET.get('file_hash')
+def combine_chunks(file_hash):
     chunks = FileChunk.objects.filter(file_hash=file_hash).order_by('index')
     file_path = f'media/{file_hash}.svg'
 
@@ -87,7 +96,7 @@ def combine_chunks(request):
     compressed_path = compress_image(file_path, file_hash)
 
     return JsonResponse({'file_path': file_path, 'compressed_path': compressed_path}, status=200)
-
+    
 @csrf_exempt
 def compress_image(file_path, file_hash, size=(1024, 1024)):
     # 打开原始图像

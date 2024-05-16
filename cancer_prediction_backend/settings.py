@@ -27,7 +27,13 @@ SECRET_KEY = 'django-insecure-3@*k5u7)45&2r$#kz(!3@5s2-7ypsu_f@=01jw)37s)b$oi$#f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+
+ALLOWED_HOSTS = ['10.134.110.90', '*']
+
+MedSAM_CKPT_PATH = "../model/sam_vit_b_01ec64.pth"
+
+DEVICE = 'cuda:0'
 
 AUTH_USER_MODEL = "user.User"
 

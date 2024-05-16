@@ -1,3 +1,5 @@
 *.pyc
 local_media/
 log/
+media/uploads/
+media/completed/

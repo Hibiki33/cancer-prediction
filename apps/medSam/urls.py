@@ -3,5 +3,6 @@ from django.urls import path
 # from .views import upload_pic, upload_chunk, combine_chunks
 
 urlpatterns = [
+    
 ]
     
