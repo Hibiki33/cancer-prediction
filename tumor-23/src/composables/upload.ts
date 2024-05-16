@@ -1,27 +1,65 @@
 import SparkMD5 from 'spark-md5'
 import axios from '~/api/axio'
+
 let fileHash:any
 let fileName:any
-
+let preview: any
 export const handleUpload = async (file: any, fileList: any) => {
+    // const formData = new FormData();
+    // formData.append('fileHash', "5012b46e6560a5e49a0da4353b6c0a1c");
+    // formData.append('fileName', "5012b46e6560a5e49a0da4353b6c0a1c.svs");
+    // console.log("merge!")
+    // axios.post('fileManager/merge/', formData).then(response => {
+    //     const data = response.data
+    //     console.log(data)
+    //     preview = data.preview
+    // })
+    //
+    // return preview;
     console.log('开始上传文件')
+    console.log(typeof file.raw)
+
+
     if (!file) {
         return
     }
-    console.log(file)
-    console.log(typeof file)
-    let fileName = file.name
-    console.log(fileName)
+
+    fileName = file.name
+    console.log("filename: " + fileName);
     let fileChunkList = createFileChunks(file.raw)
-    const hashPromise = calculateHash(fileChunkList);
-    await hashPromise
-    hashPromise.then(
-        hash => {
-            console.log(hash)
-            fileHash = hash
-            uploadChunks(fileChunkList).then(r => {})
-        }
-    )
+    // const hashPromise = calculateHash(fileChunkList);
+    //
+    // await hashPromise
+    //
+    // hashPromise.then(
+    //     hash => {
+    //         fileHash = hash
+    //         // uploadChunks(fileChunkList)
+    //     }
+    // )
+
+    await sleep(1000)
+    fileHash = await calculateHash(fileChunkList);
+    console.log("hash: " + fileHash);
+    console.log("name: " + fileName);
+    const reader = new FileReader();
+    reader.readAsText(file.raw);
+    reader.onload = () => {
+        const formData = new FormData();
+        formData.append('fileName', fileName);
+        formData.append('fileHash', fileHash);
+        formData.append('chunkHash', fileHash);
+        // formData.append("chunk", reader.result.toString());
+
+        axios.post('fileManager/uploadc/', formData);
+    }
+
+
+    return preview
+}
+
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const CHUNK_SIZE = 1024 * 1024
@@ -36,6 +74,19 @@ const createFileChunks = (file: File) => {
         cur += CHUNK_SIZE
     }
     return fileChunkList
+}
+
+async function readFileData(file: any): Promise<string | ArrayBuffer | null> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = () => {
+            reject(reader.error);
+        };
+        reader.readAsDataURL(file);
+    });
 }
 
 const calculateHash = async (fileChunks: Array<{file: Blob}>) => {
@@ -77,8 +128,9 @@ const uploadChunks = async (fileChunks: Array<{file: Blob}>) => {
         formData.append('fileHash', fileHash)
         return formData
     })
+    let index = 0;
 
-    let index = 0
+    index = 0
     const max = 6
     const taskPool: any = []
 
@@ -102,7 +154,13 @@ const uploadChunks = async (fileChunks: Array<{file: Blob}>) => {
     formData.append('fileName', fileName);
 
     await Promise.all(taskPool).then(() => {    // 发送 merge 请求
+        sleep(1000)
         axios.post('fileManager/merge/', formData)
+            .then(response => {
+            const data = response.data
+            console.log(data)
+            preview = data.preview
+        })
     })
 
 }

@@ -26,11 +26,11 @@ import { toggleDark } from "~/composables";
         上传
       </el-menu-item>
     </router-link>
-    <router-link to="" class="router-link">
-      <el-menu-item index="4">
-        历史
-      </el-menu-item>
-    </router-link>
+<!--    <router-link to="" class="router-link">-->
+<!--      <el-menu-item index="4">-->
+<!--        历史-->
+<!--      </el-menu-item>-->
+<!--    </router-link>-->
 <!--    <el-menu-item index="4" disabled>Info</el-menu-item>-->
     <el-menu-item h="full" @click="toggleDark()">
       <button

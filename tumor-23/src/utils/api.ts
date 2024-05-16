@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { store } from '~/store/store'
 
 const instance: AxiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000', // 你的 API 地址
+    baseURL: 'http://10.134.110.90:8000', // 你的 API 地址
     timeout: 5000, // 请求超时时间
     headers: {
         'Content-Type': 'application/json',

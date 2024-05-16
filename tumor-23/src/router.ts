@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import Diagnose from "./Diagnose.vue";
 import Welcome from "./Welcome.vue";
 import Result from "~/components/Result.vue";
-import Upload from "~/components/upload.vue";
 import WebsiteIntroduce from "~/components/WebsiteIntroduce.vue";
 import Login from "~/components/Login.vue"
 import Signup from "~/components/Signup.vue";
@@ -44,19 +43,19 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
-    if (to.path === '/login' || to.path === '/signup') {
-        next();
-    } else {
-
-        // let token = localStorage.getItem('Authorization');
-        const isLogin = store.state.isLoggedIn
-        if (isLogin) {
-            next();
-        } else {
-            next('/login');
-        }
-    }
-});
+// router.beforeEach((to, from, next) => {
+//     if (to.path === '/login' || to.path === '/signup') {
+//         next();
+//     } else {
+//
+//         // let token = localStorage.getItem('Authorization');
+//         const isLogin = store.state.isLoggedIn
+//         if (isLogin) {
+//             next();
+//         } else {
+//             next('/login');
+//         }
+//     }
+// });
 
 export default router;

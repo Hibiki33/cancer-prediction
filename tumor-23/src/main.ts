@@ -18,12 +18,15 @@ import "uno.css";
 // If you want to use ElMessage, import it.
 import "element-plus/theme-chalk/src/message.scss";
 import router from "./router";
+import VueCropper from 'vue-cropper';
+import 'vue-cropper/dist/index.css'
 import axios from "~/api/axio";
 
 const app = createApp(App);
 // app.use(ElementPlus);
 app.use(router);
 app.use(store, key)
+app.use(VueCropper)
 app.mount("#app");
 
 

@@ -9,14 +9,14 @@
       <div class="intro-item">
         <img src="/zhongliu.png" alt="介绍图片1" class="item-image-left">
       </div>
-      <div class="intro-item">
-        <div class="item-title-left">
-          技术细节
-        </div>
-        <div class="item-content-left">
-          肿瘤灵知是一款基于人工智能技术的一体化医疗平台，旨在为医患双方提供精准的癌症预后决策。
-        </div>
-      </div>
+<!--      <div class="intro-item">-->
+<!--        <div class="item-title-left">-->
+<!--          技术细节-->
+<!--        </div>-->
+<!--        <div class="item-content-left">-->
+<!--          肿瘤灵知是一款基于人工智能技术的一体化医疗平台，旨在为医患双方提供精准的癌症预后决策。-->
+<!--        </div>-->
+<!--      </div>-->
 
     </div>
     <div class="vertical-line"></div>
@@ -30,9 +30,9 @@
           肿瘤灵知是一款基于人工智能技术的一体化医疗平台，旨在为医患双方提供精准的癌症预后决策。
         </div>
       </div>
-      <div class="intro-item">
-        <img src="https://pic.imgdb.cn/item/65ab4329871b83018a958c6b.png" alt="介绍图片1" class="item-image-right">
-      </div>
+<!--      <div class="intro-item">-->
+<!--        <img src="https://pic.imgdb.cn/item/65ab4329871b83018a958c6b.png" alt="介绍图片1" class="item-image-right">-->
+<!--      </div>-->
     </div>
   </div>
 </template>
@@ -48,7 +48,7 @@ body {
 .contain {
   display: flex;
   align-items: center;
-  height: 100vh; /* 100% viewport height */
+  height: 50vh; /* 100% viewport height */
 }
 
 .left-panel,
